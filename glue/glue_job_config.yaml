@@ -1,0 +1,32 @@
+# AWS Glue Job Configuration for YouTube Data Processing
+
+GlueJobName: TransformYouTubeData
+GlueVersion: "4.0"
+Role: "arn:aws:iam::ACCOUNT_ID:role/GlueJobRole"
+
+ExecutionProperty:
+  MaxConcurrentRuns: 2
+
+DefaultArguments:
+  "--job-bookmark-option": "job-bookmark-enable"
+  "--S3_INPUT_PATH": "s3://youtube-data-raw/"
+  "--S3_OUTPUT_PATH": "s3://youtube-data-processed/"
+  "--DATABASE_NAME": "youtube_database"
+  "--TABLE_NAME": "youtube_videos"
+  "--enable-metrics": "true"
+  "--enable-spark-ui": "true"
+
+Command:
+  Name: "glueetl"
+  ScriptLocation: "s3://youtube-glue-scripts/etl_transform.py"
+  PythonVersion: "3"
+
+ExecutionClass: "FLEX"
+WorkerType: "G.1X"
+NumberOfWorkers: 5
+Timeout: 2880
+
+Tags:
+  Project: "YouTubeAnalysis"
+  Environment: "production"
+  CostCenter: "DataEngineering"
